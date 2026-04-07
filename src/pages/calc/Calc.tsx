@@ -13,6 +13,7 @@ const dotSymbol = ",";
 const minusSymbol = "\u2212";
 const groupSeparator = "\u2009";
 
+
 interface ICalcState {
     expression: string,
     result: string,
@@ -31,6 +32,7 @@ const initCalcState:ICalcState = {
 
 export default function Calc() {
     const [calcState, setCalcState] = useState<ICalcState>(initCalcState);
+    const [memory, setMemory] = useState<number | null>(null);
 
     // врахування конфігурації: поворот екрану (орієнтація пристрою)
     const {width, height} = useWindowDimensions();
@@ -233,6 +235,37 @@ export default function Calc() {
     
     const resultFontSize = calcState.result.length <= 11 ? 60.0 : 660.0 / calcState.result.length;
 
+
+
+
+    const memoryClear = () => {
+        setMemory(null);
+    };
+
+    const memoryRecall = () => {
+        if(memory === null) return;
+
+        setCalcState({...calcState,
+            result: numToRes(memory),
+            isNeedClear: true
+        });
+    };
+
+    const memorySave = () => {
+        setMemory(resToNum(calcState.result));
+    };
+
+    const memoryAdd = () => {
+        let val = resToNum(calcState.result);
+        setMemory((memory ?? 0) + val);
+    };
+
+    const memorySub = () => {
+        let val = resToNum(calcState.result);
+        setMemory((memory ?? 0) - val);
+    };
+
+    const isMemoryEmpty = memory === null;
     const PortraitView = () => <View style={CalcStyle.pageContainer}>
         <View style={CalcStyle.display}>
             <Text style={CalcStyle.pageTitle}>Calculator</Text>
@@ -242,12 +275,33 @@ export default function Calc() {
 
         <View style={CalcStyle.keyboard}>
             <View style={CalcStyle.memoryRow}>
-                <MemoryButton text="MC" type={MemoryButtonTypes.disabled} />
-                <MemoryButton text="MR" type={MemoryButtonTypes.disabled} />
-                <MemoryButton text="M+" />
-                <MemoryButton text="M-" />
-                <MemoryButton text="MS" />
-                <MemoryButton text="Mv" type={MemoryButtonTypes.disabled} />
+                <MemoryButton 
+                    text="MC" 
+                    type={isMemoryEmpty ? MemoryButtonTypes.disabled : MemoryButtonTypes.enabled}
+                    onPress={memoryClear}
+                />
+                <MemoryButton 
+                    text="MR" 
+                    type={isMemoryEmpty ? MemoryButtonTypes.disabled : MemoryButtonTypes.enabled}
+                    onPress={memoryRecall}
+                />
+                <MemoryButton 
+                    text="M+" 
+                    onPress={memoryAdd}
+                />
+                <MemoryButton 
+                    text="M-" 
+                    onPress={memorySub}
+                />
+                <MemoryButton 
+                    text="MS" 
+                    onPress={memorySave}
+                />
+                <MemoryButton 
+                    text="Mv" 
+                    type={isMemoryEmpty ? MemoryButtonTypes.disabled : MemoryButtonTypes.enabled}
+                    onPress={memoryRecall}
+                />
             </View>
             <View style={CalcStyle.buttonsRow}>
                 <CalcButton text="%" onPress={() => console.log("Press")}/>
@@ -294,12 +348,33 @@ export default function Calc() {
                 <Text style={CalcStyle.pageTitle}>Calculator</Text>
                 <Text style={CalcStyle.expression}>{calcState.expression}{Math.cos(1)}</Text>
                 <View style={CalcStyle.memoryRow}>
-                    <MemoryButton text="MC" type={MemoryButtonTypes.disabled} />
-                    <MemoryButton text="MR" type={MemoryButtonTypes.disabled} />
-                    <MemoryButton text="M+" />
-                    <MemoryButton text="M-" />
-                    <MemoryButton text="MS" />
-                    <MemoryButton text="Mv" type={MemoryButtonTypes.disabled} />
+                    <MemoryButton 
+                        text="MC" 
+                        type={isMemoryEmpty ? MemoryButtonTypes.disabled : MemoryButtonTypes.enabled}
+                        onPress={memoryClear}
+                    />
+                    <MemoryButton 
+                        text="MR" 
+                        type={isMemoryEmpty ? MemoryButtonTypes.disabled : MemoryButtonTypes.enabled}
+                        onPress={memoryRecall}
+                    />
+                    <MemoryButton 
+                        text="M+" 
+                        onPress={memoryAdd}
+                    />
+                    <MemoryButton 
+                        text="M-" 
+                        onPress={memorySub}
+                    />
+                    <MemoryButton 
+                        text="MS" 
+                        onPress={memorySave}
+                    />
+                    <MemoryButton 
+                        text="Mv" 
+                        type={isMemoryEmpty ? MemoryButtonTypes.disabled : MemoryButtonTypes.enabled}
+                        onPress={memoryRecall}
+                    />
                 </View>
             </View>
             <Text style={[CalcStyle.resultLand, {fontSize: resultFontSize}]}>{calcState.result}</Text>
