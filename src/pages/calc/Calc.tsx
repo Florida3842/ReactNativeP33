@@ -198,6 +198,38 @@ export default function Calc() {
             result: formatResult(raw),
         });
     };
+
+    const squareClick = () => {
+        let arg = resToNum(calcState.result);
+        let res = arg * arg;
+
+        setCalcState({...calcState,
+            result: numToRes(res),
+            expression: `${calcState.result}² =`,
+            isNeedClear: true
+        });
+    };
+
+    const sqrtClick = () => {
+        let arg = resToNum(calcState.result);
+
+        if(arg < 0) {
+            setCalcState({...calcState,
+                result: "0",
+                expression: `√(${calcState.result}) = Error`,
+                isNeedClear: true
+            });
+            return;
+        }
+
+        let res = Math.sqrt(arg);
+
+        setCalcState({...calcState,
+            result: numToRes(res),
+            expression: `√(${calcState.result}) =`,
+            isNeedClear: true
+        });
+    };
     
     const resultFontSize = calcState.result.length <= 11 ? 60.0 : 660.0 / calcState.result.length;
 
@@ -225,8 +257,8 @@ export default function Calc() {
             </View>
              <View style={CalcStyle.buttonsRow}>
                 <CalcButton text={"\u00b9/\u2093"} onPress={invClick}/>
-                <CalcButton text={"x\u00b2"} />
-                <CalcButton text={"\u00B2\u221ax\u0305"} />
+                <CalcButton text={"x\u00b2"} onPress={squareClick} />
+                <CalcButton text={"\u221Ax"} onPress={sqrtClick} />
                 <CalcButton text={"\u00F7"} onPress={(face) => operButtonClick(CalcOperations.div, face)} />
             </View>
              <View style={CalcStyle.buttonsRow}>
@@ -291,7 +323,7 @@ export default function Calc() {
                 <CalcButton text="CE" onPress={clearEntryClick} />
             </View>
             <View style={CalcStyle.buttonsRowLand}>
-                <CalcButton text={"x\u00b2"} />
+                <CalcButton text={"x\u00b2"} onPress={squareClick} />
                 <CalcButton text="1" buttonType={CalcButtonTypes.digit} onPress={digitClick} />
                 <CalcButton text="2" buttonType={CalcButtonTypes.digit} onPress={digitClick} />
                 <CalcButton text="3" buttonType={CalcButtonTypes.digit} onPress={digitClick} />
@@ -299,7 +331,7 @@ export default function Calc() {
                 <CalcButton text={"\u232B"} onPress={backspaceClick}/>
             </View>
             <View style={CalcStyle.buttonsRowLand}>
-                <CalcButton text={"\u00B2\u221ax\u0305"} />
+                <CalcButton text={"\u221Ax"} onPress={sqrtClick} />
                 <CalcButton text={"\u207a\u2215\u208b"} buttonType={CalcButtonTypes.digit} onPress={pmClick} />
                 <CalcButton text="0" buttonType={CalcButtonTypes.digit} onPress={digitClick} />
                 <CalcButton text={dotSymbol} buttonType={CalcButtonTypes.digit} onPress={dotClick}/>
