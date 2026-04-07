@@ -33,31 +33,8 @@ const AppContentStyle = StyleSheet.create({
     },
     pageWidget: {
         flex: 1,
-        flexDirection: "row",
-        flexWrap: "wrap",
         justifyContent: "space-evenly",
         alignItems: "center",
-    },
-    card: {
-        width: "40%",
-        marginVertical: 10,
-        alignItems: "center",
-    },
-
-    imagePlaceholder: {
-        width: "100%",
-        height: 100,
-        backgroundColor: "#bbbbbb86",
-        borderRadius: 8,    
-    },
-    titlePlaceholder: {
-        width: "80%",
-        height: 20,
-        backgroundColor: "#bbbbbb86",
-        marginTop: 8,
-        borderRadius: 4,
-        alignItems: "center",
-        justifyContent: "center",
     },
     bottomBar: {
         backgroundColor: "#333",
@@ -69,7 +46,7 @@ const AppContentStyle = StyleSheet.create({
         alignItems: "center",
     },
     bottomBarIcon: {
-        backgroundColor: "#bbb",
+        tintColor: "#bbb",
         height: 42,
         width: 42,
     },
