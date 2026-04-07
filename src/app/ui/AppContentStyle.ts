@@ -18,6 +18,12 @@ const AppContentStyle = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: "center",
     },
+    topBarBack: {
+        fontSize: 28.0,
+        color: Colors.primaryTextColor,
+        fontWeight: 700,
+        marginLeft: 2.0,
+    },
     topBarIcon: {
         backgroundColor: "#bbb",
         height: 42,

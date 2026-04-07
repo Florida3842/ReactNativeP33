@@ -48,7 +48,11 @@ export default function App() {
 
     return <View style={AppContentStyle.container}>
         <View style={AppContentStyle.topBar}>
-            <View style={AppContentStyle.topBarIcon}></View>
+            <TouchableOpacity onPress={() => navigate({slug: '-1'})}>
+                <Text style={AppContentStyle.topBarBack}>
+                    〈
+                </Text>    
+            </TouchableOpacity>
             <Text style={AppContentStyle.topBarTitle}>Mobile-P33</Text>
             <View style={AppContentStyle.topBarIcon}></View>
         </View>
