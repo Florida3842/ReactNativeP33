@@ -11,6 +11,7 @@ import MemoryButton from "./ui/MemoryButton";
 const maxDigits = 20;
 const dotSymbol = ",";
 const minusSymbol = "\u2212";
+const groupSeparator = "\u2009";
 
 interface ICalcState {
     expression: string,
@@ -33,6 +34,41 @@ export default function Calc() {
 
     // врахування конфігурації: поворот екрану (орієнтація пристрою)
     const {width, height} = useWindowDimensions();
+
+     const countDigits = (res: string): number => {
+        return res.replace(/\D/g, '').length;
+    };
+
+    const normalize = (res: string): string => {
+        return res
+            .replaceAll(groupSeparator, '')
+            .replace(dotSymbol, '.')
+            .replace(minusSymbol, '-');
+    };
+
+    const formatResult = (res: string): string => {
+        let sign = '';
+        if(res.startsWith(minusSymbol)) {
+            sign = minusSymbol;
+            res = res.substring(1);
+        }
+
+        let [intPart, fracPart] = res.split(dotSymbol);
+
+        intPart = intPart.replaceAll(groupSeparator, '');
+
+        let formattedInt = '';
+        for(let i = 0; i < intPart.length; i++) {
+            let pos = intPart.length - i;
+            formattedInt += intPart[i];
+            if(pos > 1 && pos % 3 === 1) {
+                formattedInt += groupSeparator;
+            }
+        }
+
+        return sign + formattedInt + (fracPart ? dotSymbol + fracPart : '');
+    };
+
 
     // #region Functions
     const equalClick = () => {
@@ -62,16 +98,15 @@ export default function Calc() {
     };
     
     const resToNum = (res:string):number => { 
-        return Number(res
-            .replace(dotSymbol, '.')
-            .replace(minusSymbol, '-')
-        );
+        return Number(normalize(res));
     };
 
     const numToRes = (num:number):string => {
-        return num.toString()
-            .replace('.', dotSymbol)
-            .replace('-', minusSymbol);
+        return formatResult(
+            num.toString()
+                .replace('.', dotSymbol)
+                .replace('-', minusSymbol)
+        );
     };
 
     const invClick = () => {
@@ -86,12 +121,16 @@ export default function Calc() {
 
     const digitClick = (text:string) => {
         let res = calcState.result;
+
         if(res == '0' || calcState.isNeedClear || calcState.isNeedClearEntry) {
             res = '';
         }
-        if(res.length < maxDigits + (res.includes(dotSymbol) ? 1 : 0)) {
+
+        if(countDigits(res) < maxDigits) {
             res += text;
+            res = formatResult(res);
         }
+
         setCalcState({...calcState,
             result: res,
             expression: calcState.isNeedClear ? "" : calcState.expression,
@@ -111,22 +150,30 @@ export default function Calc() {
     };
 
     const backspaceClick = () => {
-        let len = calcState.result.length;
-        let res = len > 1 ? calcState.result.substring(0, len - 1) : "0";
-        if(res == minusSymbol) {
-            res = '0';
-        }
+        let raw = normalize(calcState.result);
+
+        let len = raw.length;
+        let res = len > 1 ? raw.substring(0, len - 1) : "0";
+
+        if(res == '-') res = '0';
+
+        res = res
+            .replace('.', dotSymbol)
+            .replace('-', minusSymbol);
+
         setCalcState({...calcState,
-            result: res,
-       });
-    }
+            result: formatResult(res),
+        });
+    };
 
     const dotClick = (text:string) => {
         if(!calcState.result.includes(text)) {
+            let res = calcState.isNeedClear || calcState.isNeedClearEntry
+                ? "0" + text
+                : calcState.result + text;
+
             setCalcState({...calcState,
-                result: calcState.isNeedClear || calcState.isNeedClearEntry
-                    ? "0" + text
-                    : calcState.result + text,
+                result: formatResult(res),
                 expression: calcState.isNeedClear ? "" : calcState.expression,
                 isNeedClear: false,
                 isNeedClearEntry: false,
@@ -136,20 +183,19 @@ export default function Calc() {
 
     const pmClick = () => {
         if(calcState.result == '0') return;
-        if(calcState.isNeedClear) {
-            clearClick();
-            return;
-        }
-        if(calcState.isNeedClearEntry) {
-            clearEntryClick();
-            return;
-        }
-        let res = calcState.result.startsWith(minusSymbol)
-        ? calcState.result.substring(1)
-        : minusSymbol + calcState.result;
+
+        let raw = normalize(calcState.result);
+
+        raw = raw.startsWith('-')
+            ? raw.substring(1)
+            : '-' + raw;
+
+        raw = raw
+            .replace('.', dotSymbol)
+            .replace('-', minusSymbol);
 
         setCalcState({...calcState,
-            result: res,
+            result: formatResult(raw),
         });
     };
     
