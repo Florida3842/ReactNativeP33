@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import INbuRate from "../../entities/NbuRate/model/INbuRate";
 import NbuRateApi from "../../entities/NbuRate/api/NbuRateApi";
 import DatePicker from "react-native-date-picker";
+import currencyCodes from "currency-codes";
 
 export default function Rate() {
     const [rates, setRates] = useState<Array<INbuRate>>([]);
@@ -17,10 +18,25 @@ export default function Rate() {
     }, [date]);
 
     useEffect(() => {
-        if(search.length > 0) {
-            setShownRates(rates.filter(r => r.cc.includes(search)));
-        }
-        else {
+        if (search.length > 0) {
+            const s = search.toLowerCase();
+
+            setShownRates(
+                rates.filter(r => {
+                    const cc = r.cc.toLowerCase();
+                    const txt = r.txt.toLowerCase();
+
+                    const currency = currencyCodes.code(r.cc);
+                    const nameEn = currency?.currency?.toLowerCase() || "";
+
+                    return (
+                        cc.includes(s) ||
+                        txt.includes(s) ||
+                        nameEn.includes(s)
+                    );
+                })
+            );
+        } else {
             setShownRates(rates);
         }
     }, [search, rates]);
