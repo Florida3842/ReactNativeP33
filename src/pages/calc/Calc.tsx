@@ -81,6 +81,7 @@ export default function Calc() {
               : calcState.operation == CalcOperations.sub ? calcState.prevArgument! - resToNum(calcState.result)
               : calcState.operation == CalcOperations.mul ? calcState.prevArgument! * resToNum(calcState.result)
               : calcState.operation == CalcOperations.div ? calcState.prevArgument! / resToNum(calcState.result)
+              : calcState.operation == CalcOperations.percent ? calcState.prevArgument! * resToNum(calcState.result) / 100
               : NaN
             ),
             expression: `${calcState.expression} ${calcState.result} =`,
@@ -266,6 +267,95 @@ export default function Calc() {
     };
 
     const isMemoryEmpty = memory === null;
+
+    const trigClick = (func: 'sin' | 'cos' | 'tan' | 'ctg') => {
+        let arg = resToNum(calcState.result);
+        let res: number;
+        let expr = `${func}(${calcState.result}) =`;
+
+        switch (func) {
+            case 'sin':
+                res = Math.sin(arg);
+                break;
+            case 'cos':
+                res = Math.cos(arg);
+                break;
+            case 'tan':
+                if (Math.abs(Math.cos(arg)) < 1e-10) {
+                    setCalcState({
+                        ...calcState,
+                        result: "0",
+                        expression: `tan(${calcState.result}) = Error`,
+                        isNeedClear: true,
+                    });
+                    return;
+                }
+                res = Math.tan(arg);
+                break;
+            case 'ctg':
+                if (Math.abs(Math.sin(arg)) < 1e-10) {
+                    setCalcState({
+                        ...calcState,
+                        result: "0",
+                        expression: `ctg(${calcState.result}) = Error`,
+                        isNeedClear: true,
+                    });
+                    return;
+                }
+                res = 1 / Math.tan(arg);
+                break;
+        }
+
+        setCalcState({
+            ...calcState,
+            result: numToRes(res),
+            expression: expr,
+            isNeedClear: true,
+        });
+    };
+
+    const percentClick = () => {
+        const current = resToNum(calcState.result);
+
+        if (!calcState.operation) {
+            setCalcState({
+                ...calcState,
+                operation: CalcOperations.percent,
+                prevArgument: current,
+                expression: `${calcState.result} %`,
+                isNeedClearEntry: true,
+            });
+        } else {
+            let newResult: number;
+
+            switch (calcState.operation) {
+                case CalcOperations.add:
+                    newResult = calcState.prevArgument! * (1 + current / 100);
+                    break;
+                case CalcOperations.sub:
+                    newResult = calcState.prevArgument! * (1 - current / 100);
+                    break;
+                case CalcOperations.mul:
+                    newResult = calcState.prevArgument! * (current / 100);
+                    break;
+                case CalcOperations.div:
+                    newResult = calcState.prevArgument! / (current / 100);
+                    break;
+                default:
+                    newResult = current / 100;
+            }
+
+            setCalcState({
+                ...calcState,
+                result: numToRes(newResult),
+                expression: `${calcState.expression} ${calcState.result} % =`,
+                operation: undefined,
+                prevArgument: undefined,
+                isNeedClear: true,
+            });
+        }
+    };
+
     const PortraitView = () => <View style={CalcStyle.pageContainer}>
         <View style={CalcStyle.display}>
             <Text style={CalcStyle.pageTitle}>Calculator</Text>
@@ -304,7 +394,13 @@ export default function Calc() {
                 />
             </View>
             <View style={CalcStyle.buttonsRow}>
-                <CalcButton text="%" onPress={() => console.log("Press")}/>
+                <CalcButton text="sin" onPress={() => trigClick('sin')} />
+                <CalcButton text="cos" onPress={() => trigClick('cos')} />
+                <CalcButton text="tan" onPress={() => trigClick('tan')} />
+                <CalcButton text="ctg" onPress={() => trigClick('ctg')} />
+            </View>
+            <View style={CalcStyle.buttonsRow}>
+                <CalcButton text="%" onPress={percentClick} />
                 <CalcButton text="CE" onPress={clearEntryClick} />
                 <CalcButton text="C" onPress={clearClick} />
                 <CalcButton text={"\u232B"} onPress={backspaceClick}/>
@@ -382,10 +478,11 @@ export default function Calc() {
 
         <View style={CalcStyle.keyboardLand}>
             <View style={CalcStyle.buttonsRowLand}>
-                <CalcButton text="%" onPress={() => console.log("Press")}/>
-                <CalcButton text="7" buttonType={CalcButtonTypes.digit} onPress={digitClick} />
-                <CalcButton text="8" buttonType={CalcButtonTypes.digit} onPress={digitClick} />
-                <CalcButton text="9" buttonType={CalcButtonTypes.digit} onPress={digitClick} />
+                <CalcButton text="%" onPress={percentClick}/>
+                <CalcButton text="sin" onPress={() => trigClick('sin')} />
+                <CalcButton text="cos" onPress={() => trigClick('cos')} />
+                <CalcButton text="tan" onPress={() => trigClick('tan')} />
+                <CalcButton text="ctg" onPress={() => trigClick('ctg')} />
                 <CalcButton text={"\u00F7"} onPress={(face) => operButtonClick(CalcOperations.div, face)} />
                 <CalcButton text="C" onPress={clearClick} />
             </View>
