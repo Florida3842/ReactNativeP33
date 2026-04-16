@@ -1,56 +1,34 @@
-import { View } from "react-native";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 import HomeStyle from "./ui/HomeStyle";
-import { Text } from "react-native";
+import { useContext } from "react";
+import { AppContext } from "../../features/context/AppContext";
 
+export default function Home() {
+    const {navigate} = useContext(AppContext);
 
-
-export default function Home(){
     return <View style={HomeStyle.pageContainer}>
-        <Text style={HomeStyle.pageTitle}>Home Page</Text>
+        <Text style={HomeStyle.pageTitle}>React Native</Text>
 
-        <View style={HomeStyle.pageWidget}>
-                <View style={HomeStyle.card}>
-                    <View style={HomeStyle.imagePlaceholder}></View>
-                    <View style={HomeStyle.titlePlaceholder}>
-                        <Text style={HomeStyle.text}>Loading...</Text>
-                    </View>
-                </View>
+        <TouchableOpacity 
+            style={HomeStyle.navItem} 
+            onPress={() => navigate({slug: 'calc'})}>
+            <Image 
+                source={require('../../features/asset/calc.png')}
+                style={HomeStyle.navImage}/>
+            <Text 
+                style={HomeStyle.navText}>Калькулятор</Text>
+        </TouchableOpacity>
 
-                <View style={HomeStyle.card}>
-                    <View style={HomeStyle.imagePlaceholder}></View>
-                    <View style={HomeStyle.titlePlaceholder}>
-                        <Text style={HomeStyle.text}>Loading...</Text>
-                    </View>
-                </View>
+        <TouchableOpacity 
+            style={HomeStyle.navItem} 
+            onPress={() => navigate({slug: 'rate'})}>
+            <Image 
+                source={require('../../features/asset/rate.png')}
+                style={HomeStyle.navImage}/>
+            <Text 
+                style={HomeStyle.navText}>Курс валют НБУ</Text>
+        </TouchableOpacity>
 
-                <View style={HomeStyle.card}>
-                    <View style={HomeStyle.imagePlaceholder}></View>
-                    <View style={HomeStyle.titlePlaceholder}>
-                        <Text style={HomeStyle.text}>Loading...</Text>
-                    </View>
-                </View>
-
-                <View style={HomeStyle.card}>
-                    <View style={HomeStyle.imagePlaceholder}></View>
-                    <View style={HomeStyle.titlePlaceholder}>
-                        <Text style={HomeStyle.text}>Loading...</Text>
-                    </View>
-                </View>
-
-                <View style={HomeStyle.card}>
-                    <View style={HomeStyle.imagePlaceholder}></View>
-                    <View style={HomeStyle.titlePlaceholder}>
-                        <Text style={HomeStyle.text}>Loading...</Text>
-                    </View>
-                </View>
-
-                <View style={HomeStyle.card}>
-                    <View style={HomeStyle.imagePlaceholder}></View>
-                    <View style={HomeStyle.titlePlaceholder}>
-                        <Text style={HomeStyle.text}>Loading...</Text>
-                    </View>
-                </View> 
-
-            </View>
+        
     </View>;
 }

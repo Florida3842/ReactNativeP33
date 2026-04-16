@@ -4,42 +4,37 @@ import Colors from "../../../features/config/Colors";
 const HomeStyle = StyleSheet.create({
     pageContainer: {
         flex: 1,
-        alignItems: "center",
+        display: "flex",
+        flexDirection: "column",
+        width: "100%",
     },
     pageTitle: {
-        fontSize: 24,
-        fontWeight: "600",
-        
-    },
-    pageWidget: {
-        flexDirection: "row",
-        flexWrap: "wrap",
-        alignItems: "center",
-        justifyContent: "space-evenly",
-    },
-    card: {
-        width: "40%",
-        marginVertical: 10,
-        alignItems: "center",
-    },
-
-    imagePlaceholder: {
-        width: "100%",
-        height: 100,
-        backgroundColor: "#bbbbbb86",
-        borderRadius: 8,    
-    },
-    titlePlaceholder: {
-        width: "80%",
-        height: 20,
-        backgroundColor: "#bbbbbb86",
-        marginTop: 8,
-        borderRadius: 4,
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    text: {
         color: Colors.primaryTextColor,
+        fontWeight: 600,
+        textAlign: "center",
+        fontSize: 20.0,
+        marginVertical: 10.0,
+    },
+    navItem: {
+        borderWidth: 1.0,
+        borderColor: Colors.primaryTextColor,
+        borderRadius: 5.0,
+        marginHorizontal: 20.0,
+        marginVertical: 10.0,
+        padding: 10.0,
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    navImage: {
+        tintColor: Colors.primaryTextColor,
+        width: 50.0,
+        height: 50.0,
+        marginRight: 10.0,
+    },
+    navText: {
+        color: Colors.primaryTextColor,
+        fontSize: 18.0,
     }
 });
 
